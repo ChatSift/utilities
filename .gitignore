@@ -1,0 +1,14 @@
+/**/node_modules
+.env
+
+coverage
+/**/dist
+/**/.turbo
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

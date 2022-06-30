@@ -1,0 +1,39 @@
+{
+	"name": "utilities",
+	"description": "Set of useful tools across all of ChatSift",
+	"packageManager": "yarn@3.2.1",
+	"version": "0.1.0",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"test": "turbo run test",
+		"lint": "turbo run lint && prettier --check --plugin-search-dir=. .",
+		"format": "prettier --write --plugin-search-dir=. .",
+		"prepare": "is-ci || husky install",
+		"changelog": "turbo run changelog",
+		"update": "yarn upgrade-interactive"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^17.0.3",
+		"@commitlint/config-angular": "^17.0.3",
+		"@types/node": "^16.11.43",
+		"@typescript-eslint/eslint-plugin": "^5.30.5",
+		"@typescript-eslint/parser": "^5.30.5",
+		"c8": "^7.11.3",
+		"eslint": "^8.19.0",
+		"eslint-config-marine": "^9.4.1",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"husky": "^8.0.1",
+		"is-ci": "^3.0.1",
+		"prettier": "^2.7.1",
+		"prettier-eslint": "^15.0.1",
+		"tsup": "^6.1.3",
+		"turbo": "^1.3.1",
+		"typescript": "^4.7.4",
+		"vitest": "^0.17.0"
+	}
+}
