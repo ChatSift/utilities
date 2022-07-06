@@ -43,7 +43,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@chatsift/discord-utils@workspace:packages/discord-utils"
   dependencies:
-    "@chatsift/utils": "^workspace:0.2.0"
+    "@chatsift/utils": "workspace:^0.2.0"
     "@types/node": ^16.11.43
     discord-api-types: ^0.36.1
     tslib: ^2.4.0
@@ -86,7 +86,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@chatsift/utils@^workspace:0.2.0, @chatsift/utils@workspace:packages/utils":
+"@chatsift/utils@workspace:^0.2.0, @chatsift/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@chatsift/utils@workspace:packages/utils"
   dependencies:
