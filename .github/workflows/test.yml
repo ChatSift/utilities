@@ -18,11 +18,11 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
-      - name: ESLint
-        run: yarn lint
-
       - name: Build
         run: yarn build
+
+      - name: ESLint
+        run: yarn lint
 
       - name: Tests
         run: yarn test
