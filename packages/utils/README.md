@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/badge/License-GNU%20AGPLv3-yellow.svg)](https://github.com/ChatSift/utilities/blob/main/LICENSE)
 [![npm](https://img.shields.io/npm/v/@chatsift/utils?color=crimson&logo=npm)](https://www.npmjs.com/package/@chatsift/utils)
-[![TypeScript](https://github.com/ChatSift/utilities/actions/workflows/quality.yml/badge.svg)](https://github.com/ChatSift/utilities/actions/workflows/quality.yml)
+[![TypeScript](https://github.com/ChatSift/utilities/actions/workflows/test.yml/badge.svg)](https://github.com/ChatSift/utilities/actions/workflows/test.yml)
 
 General purpose functions and types that should really be language standard
 
