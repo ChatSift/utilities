@@ -34,7 +34,7 @@ export type TRequest<TBody> = Omit<Request, 'body'> & { body: TBody };
  * Represents a route on the server
  */
 export abstract class Route<TResult, TBody> {
-	private readonly __internal__!: { result: TResult; body: TBody };
+	public readonly __internalOnlyHereForTypeInferrenceDoNotUse__!: { result: TResult; body: TBody };
 
 	public abstract info: RouteInfo;
 
@@ -74,4 +74,8 @@ export abstract class Route<TResult, TBody> {
 export type InferRouteMethod<TRoute extends Route<any, any>> = TRoute['info']['method'];
 export type InferRoutePath<TRoute extends Route<any, any>> = TRoute['info']['path'];
 export type InferRouteResult<TRoute> = TRoute extends Route<infer TResult, any> ? TResult : never;
-export type InferRouteBody<TRoute> = TRoute extends Route<any, infer TBody> ? TBody : never;
+export type InferRouteBody<TRoute extends Route<any, any>> = TRoute['bodyValidationSchema'] extends BaseValidator<
+	infer T
+>
+	? T
+	: never;
