@@ -1,6 +1,5 @@
 export * from './middleware/attachHttpUtils';
 export * from './middleware/jsonParser';
-export * from './middleware/userAuth';
 export * from './middleware/validate';
 
 export * from './struct/Crypt';

@@ -3,7 +3,7 @@
 import { ServerResponse } from 'http';
 import { Middleware, NextHandler, Polka, Request } from 'polka';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { Route, RouteMethod } from '../Route';
+import { Route, RouteInfo, RouteMethod } from '../Route';
 
 const serverMock = {
 	get: vi.fn(),
@@ -19,27 +19,16 @@ afterEach(() => {
 
 const server = serverMock as unknown as Polka;
 
-describe('pathToRouteInfo', () => {
-	test('top level', () => {
-		expect(Route.pathToRouteInfo('get.js')).toEqual({ path: '/', method: RouteMethod.get });
-	});
-
-	test('sub-route', () => {
-		expect(Route.pathToRouteInfo('/sub/post.js')).toEqual({ path: '/sub', method: RouteMethod.post });
-	});
-
-	test('invalid method', () => {
-		expect(Route.pathToRouteInfo('invalid.js')).toBeNull();
-	});
-});
-
 class NoMiddlewareTestRoute extends Route {
+	public info: RouteInfo = { method: RouteMethod.get, path: '/' };
+	public middleware: Middleware[] = [];
+
 	public handle = vi.fn();
 }
 
 test('registering a route', () => {
 	const route = new NoMiddlewareTestRoute();
-	route.register({ path: '/', method: RouteMethod.get }, server);
+	route.register(server);
 
 	expect(serverMock.get).toHaveBeenCalled();
 	expect(serverMock.get).toHaveBeenCalledWith('/', expect.any(Function));
@@ -48,7 +37,7 @@ test('registering a route', () => {
 describe('route handler', () => {
 	test('without middleware', async () => {
 		const route = new NoMiddlewareTestRoute();
-		route.register({ path: '/', method: RouteMethod.get }, server);
+		route.register(server);
 
 		const handle: Middleware = serverMock.get.mock.calls[0][1];
 		const handleParams = [{} as Request, {} as ServerResponse, vi.fn()] as const;
@@ -63,6 +52,8 @@ describe('route handler', () => {
 		const middleware = (_: Request, __: ServerResponse, next: NextHandler) => next();
 
 		class TestRoute extends Route {
+			public info: RouteInfo = { method: RouteMethod.get, path: '/owo' };
+
 			public middleware: Middleware[] = [middleware];
 
 			public handle = vi.fn(() => {
@@ -71,7 +62,7 @@ describe('route handler', () => {
 		}
 
 		const route = new TestRoute();
-		route.register({ path: 'owo', method: RouteMethod.get }, server);
+		route.register(server);
 
 		expect(serverMock.get).toHaveBeenCalled();
 		expect(serverMock.get).toHaveBeenCalledWith('/owo', middleware, expect.any(Function));
