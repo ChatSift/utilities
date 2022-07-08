@@ -1,4 +1,7 @@
+import type { BaseValidator } from '@sapphire/shapeshift';
 import type { IError, Middleware, NextHandler, Polka, Request, Response } from 'polka';
+import { jsonParser } from '../middleware/jsonParser';
+import { validate } from '../middleware/validate';
 
 /**
  * Valid HTTP methods
@@ -25,33 +28,50 @@ export interface RouteInfo {
 	method: RouteMethod;
 }
 
+export type TRequest<TBody> = Omit<Request, 'body'> & { body: TBody };
+
 /**
  * Represents a route on the server
  */
-export abstract class Route {
+export abstract class Route<TResult, TBody> {
+	private readonly __internal__!: { result: TResult; body: TBody };
+
 	public abstract info: RouteInfo;
 
 	/**
 	 * Middleware to use for this route - needs to be overriden by subclasses
 	 */
-	public abstract middleware?: Middleware[];
+	public readonly middleware: Middleware[] = [];
+
+	public readonly bodyValidationSchema: BaseValidator<TBody> | null = null;
 
 	/**
-	 * Handles a request to this route - if not defined all other handlers are ignored
+	 * Handles a request to this route
 	 */
-	public abstract handle(req: Request, res: Response, next?: NextHandler): unknown;
+	public abstract handle(req: TRequest<TBody>, res: Response, next?: NextHandler): unknown;
+
+	public constructor() {
+		if (this.bodyValidationSchema) {
+			this.middleware.push(jsonParser(), validate(this.bodyValidationSchema, 'body'));
+		}
+	}
 
 	/**
 	 * Registers this route
 	 * @param server The Polka webserver to register this route onto
 	 */
 	public register(server: Polka): void {
-		server[this.info.method](this.info.path, ...(this.middleware ?? []), async (req, res, next) => {
+		server[this.info.method](this.info.path, ...this.middleware, async (req, res, next) => {
 			try {
-				await this.handle(req, res, next);
+				await this.handle(req as TRequest<TBody>, res, next);
 			} catch (e) {
 				void next(e as IError);
 			}
 		});
 	}
 }
+
+export type InferRouteMethod<TRoute extends Route<any, any>> = TRoute['info']['method'];
+export type InferRoutePath<TRoute extends Route<any, any>> = TRoute['info']['path'];
+export type InferRouteResult<TRoute> = TRoute extends Route<infer TResult, any> ? TResult : never;
+export type InferRouteBody<TRoute> = TRoute extends Route<any, infer TBody> ? TBody : never;

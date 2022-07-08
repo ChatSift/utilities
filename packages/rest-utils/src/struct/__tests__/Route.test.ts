@@ -3,7 +3,7 @@
 import { ServerResponse } from 'http';
 import { Middleware, NextHandler, Polka, Request } from 'polka';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { Route, RouteInfo, RouteMethod } from '../Route';
+import { Route, RouteMethod } from '../Route';
 
 const serverMock = {
 	get: vi.fn(),
@@ -19,8 +19,8 @@ afterEach(() => {
 
 const server = serverMock as unknown as Polka;
 
-class NoMiddlewareTestRoute extends Route {
-	public info: RouteInfo = { method: RouteMethod.get, path: '/' };
+class NoMiddlewareTestRoute extends Route<void, never> {
+	public info = { method: RouteMethod.get, path: '/' } as const;
 	public middleware: Middleware[] = [];
 
 	public handle = vi.fn();
@@ -51,8 +51,8 @@ describe('route handler', () => {
 	test('with middleware and error', async () => {
 		const middleware = (_: Request, __: ServerResponse, next: NextHandler) => next();
 
-		class TestRoute extends Route {
-			public info: RouteInfo = { method: RouteMethod.get, path: '/owo' };
+		class TestRoute extends Route<void, never> {
+			public info = { method: RouteMethod.get, path: '/owo' } as const;
 
 			public middleware: Middleware[] = [middleware];
 
