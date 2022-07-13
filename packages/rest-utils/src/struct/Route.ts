@@ -71,8 +71,14 @@ export abstract class Route<TResult, TBody> {
 	}
 }
 
+export type ParseHttpPath<T extends string> = T extends `${infer Start}/:${string}/${infer End}`
+	? ParseHttpPath<`${Start}/${string}/${End}`>
+	: T extends `${infer Start}/:${string}`
+	? ParseHttpPath<`${Start}/${string}`>
+	: T;
+
 export type InferRouteMethod<TRoute extends Route<any, any>> = TRoute['info']['method'];
-export type InferRoutePath<TRoute extends Route<any, any>> = TRoute['info']['path'];
+export type InferRoutePath<TRoute extends Route<any, any>> = ParseHttpPath<TRoute['info']['path']>;
 export type InferRouteResult<TRoute> = TRoute extends Route<infer TResult, any> ? TResult : never;
 export type InferRouteBody<TRoute extends Route<any, any>> = TRoute['bodyValidationSchema'] extends BaseValidator<
 	infer T

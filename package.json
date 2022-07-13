@@ -1,8 +1,8 @@
 {
-	"name": "utilities",
+	"name": "@chatsift/utilities",
 	"description": "Set of useful tools across all of ChatSift",
 	"packageManager": "yarn@3.2.1",
-	"version": "0.1.0",
+	"version": "0.0.0",
 	"private": true,
 	"workspaces": [
 		"packages/*"
