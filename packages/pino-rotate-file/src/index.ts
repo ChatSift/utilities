@@ -69,13 +69,7 @@ async function endStream(stream: SonicBoom) {
 }
 
 export async function pinoRotateFile(options: PinoRotateFileOptions) {
-	const pretty = prettyFactory(
-		options.prettyOptions ?? {
-			colorize: false,
-			levelFirst: true,
-			translateTime: true,
-		},
-	);
+	const pretty = options.prettyOptions ? prettyFactory(options.prettyOptions) : null;
 
 	if (options.mkdir) {
 		try {
@@ -99,7 +93,7 @@ export async function pinoRotateFile(options: PinoRotateFileOptions) {
 					dest = await createDest(path);
 				}
 
-				const toDrain = !dest.stream.write(pretty(payload));
+				const toDrain = !dest.stream.write(pretty?.(payload) ?? `${JSON.stringify(payload)}\n`);
 				if (toDrain) {
 					await once(dest.stream, 'drain');
 				}
