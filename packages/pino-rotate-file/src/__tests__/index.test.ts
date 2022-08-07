@@ -69,7 +69,7 @@ describe('initial file creation', () => {
 
 		await pinoRotateFile({ dir: 'foo', mkdir: true });
 		// mkdir is called with the correct path
-		expect(mkdirSpy).toHaveBeenCalledWith('foo');
+		expect(mkdirSpy).toHaveBeenCalledWith('foo', { recursive: true });
 		expect(sonicBoomConstructorSpy).toHaveBeenCalledWith({ dest: 'foo/2022-01-01.log' });
 	});
 });

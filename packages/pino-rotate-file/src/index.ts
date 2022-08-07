@@ -75,7 +75,7 @@ export async function pinoRotateFile(options: PinoRotateFileOptions) {
 		try {
 			await access(options.dir, fsConstants.F_OK);
 		} catch (error) {
-			await mkdir(options.dir);
+			await mkdir(options.dir, { recursive: true });
 		}
 	}
 
