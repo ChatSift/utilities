@@ -17,7 +17,7 @@ export function validate(schema: BaseValidator<any>, prop: ValidateMiddlewarePro
 		const result = schema.run(req[prop]);
 
 		if (!result.success) {
-			return next(badData(result.error?.message));
+			return next(badData(result.error?.message, result.error));
 		}
 
 		req[prop] = result.value as unknown;

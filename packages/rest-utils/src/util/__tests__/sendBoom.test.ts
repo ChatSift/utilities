@@ -1,5 +1,6 @@
 import { Http2ServerResponse } from 'http2';
-import { badRequest, internal, unauthorized } from '@hapi/boom';
+import { badData, badRequest, internal, unauthorized } from '@hapi/boom';
+import { s } from '@sapphire/shapeshift';
 import type { Response } from 'polka';
 import { afterEach, expect, test, vi } from 'vitest';
 import { sendBoom } from '../sendBoom';
@@ -43,4 +44,26 @@ test('with headers', () => {
 	expect(res.setHeader).toHaveBeenCalledTimes(1);
 	expect(res.setHeader).toHaveBeenCalledWith('WWW-Authenticate', 'abc, def');
 	expect(res.end).toHaveBeenCalledWith('{"statusCode":401,"error":"Unauthorized","message":"foo"}');
+});
+
+test('shapeshift error edge case', () => {
+	const schema = s.object({
+		foo: s.string,
+	}).strict;
+	const shapeshiftError = schema.run({ foo: 123 }).error!;
+
+	const error = badData(shapeshiftError.message, shapeshiftError);
+	const res = new MockedResponse();
+
+	sendBoom(error, res);
+	expect(res.statusCode).toBe(422);
+	expect(res.setHeader).toHaveBeenCalledTimes(0);
+	expect(res.end).toHaveBeenCalledWith(
+		JSON.stringify({
+			statusCode: 422,
+			error: 'Unprocessable Entity',
+			message: 'Received one or more errors',
+			errors: [['foo', { name: 'Error', validator: 's.string', given: 123 }]],
+		}),
+	);
 });
