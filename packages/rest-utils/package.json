@@ -1,7 +1,7 @@
 {
 	"name": "@chatsift/rest-utils",
 	"description": "Tools for building RESTful APIs",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {

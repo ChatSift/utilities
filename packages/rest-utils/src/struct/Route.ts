@@ -36,6 +36,9 @@ export type TRequest<TBody> = Omit<Request, 'body'> & { body: TBody };
 export abstract class Route<TResult, TBody> {
 	public readonly __internalOnlyHereForTypeInferrenceDoNotUse__!: { result: TResult; body: TBody };
 
+	/**
+	 * Base route information
+	 */
 	public abstract info: RouteInfo;
 
 	/**
@@ -43,6 +46,9 @@ export abstract class Route<TResult, TBody> {
 	 */
 	public readonly middleware: Middleware[] = [];
 
+	/**
+	 * Schema to use for body validation. Implicitly appends a jsonParser to the middleware
+	 */
 	public readonly bodyValidationSchema: BaseValidator<TBody> | null = null;
 
 	/**
@@ -61,7 +67,14 @@ export abstract class Route<TResult, TBody> {
 	 * @param server The Polka webserver to register this route onto
 	 */
 	public register(server: Polka): void {
-		server[this.info.method](this.info.path, ...this.middleware, async (req, res, next) => {
+		const middleware = [];
+		if (this.bodyValidationSchema) {
+			middleware.push(jsonParser(), validate(this.bodyValidationSchema, 'body'));
+		}
+
+		middleware.push(...this.middleware);
+
+		server[this.info.method](this.info.path, ...middleware, async (req, res, next) => {
 			try {
 				await this.handle(req as TRequest<TBody>, res, next);
 			} catch (e) {
