@@ -56,12 +56,6 @@ export abstract class Route<TResult, TBody> {
 	 */
 	public abstract handle(req: TRequest<TBody>, res: Response, next?: NextHandler): unknown;
 
-	public constructor() {
-		if (this.bodyValidationSchema) {
-			this.middleware.push(jsonParser(), validate(this.bodyValidationSchema, 'body'));
-		}
-	}
-
 	/**
 	 * Registers this route
 	 * @param server The Polka webserver to register this route onto
