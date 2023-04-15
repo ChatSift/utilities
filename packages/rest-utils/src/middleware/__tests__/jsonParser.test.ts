@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/consistent-type-assertions */
 
-import { Http2ServerResponse } from 'http2';
+import { Http2ServerResponse } from 'node:http2';
 import { Boom } from '@hapi/boom';
 import type { Request, Response } from 'polka';
 import { afterEach, expect, test, vi } from 'vitest';
-import { jsonParser } from '../jsonParser';
+import { jsonParser } from '../jsonParser.js';
 
 vi.mock('http2');
 

@@ -1,21 +1,23 @@
+import { Buffer } from 'node:buffer';
 import { expect, test, vi } from 'vitest';
-import { State } from '../State';
+import { State } from '../State.js';
 
 vi.useFakeTimers();
 
 const REDIRECT_URI = 'https://foo.bar' as const;
 
 const NOW = new Date();
-const NONCE = Buffer.from(Array(16).fill(1));
+const NONCE = Buffer.from(Array.from<number>({ length: 16 }).fill(1));
 const TIME = Buffer.alloc(4);
 
-TIME.writeUInt32LE(Math.floor(NOW.getTime() / 1000));
+TIME.writeUInt32LE(Math.floor(NOW.getTime() / 1_000));
 
 vi.mock('crypto', async () => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const original: typeof import('crypto') = await vi.importActual('crypto');
 	return {
 		...original,
-		randomBytes: (len: number) => Buffer.from(Array(len).fill(1)),
+		randomBytes: (len: number) => Buffer.from(Array.from<number>({ length: len }).fill(1)),
 	};
 });
 

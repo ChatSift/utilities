@@ -1,6 +1,7 @@
-import { ChannelType, APIChannel } from 'discord-api-types/v10';
+import type { APIChannel } from 'discord-api-types/v10';
+import { ChannelType } from 'discord-api-types/v10';
 import { test, expect } from 'vitest';
-import { sortChannels } from '../sortChannels';
+import { sortChannels } from '../sortChannels.js';
 
 test('sorting a list of channels', () => {
 	// Higher position than the category, but should come out on top

@@ -31,19 +31,19 @@
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
 		"@types/cookie": "^0.5.1",
-		"@types/node": "^16.11.43",
+		"@types/node": "^16.18.23",
 		"polka": "^1.0.0-next.22",
 		"reflect-metadata": "^0.1.13",
-		"tsup": "^6.1.3",
-		"typescript": "^4.7.4",
-		"vitest": "^0.17.0"
+		"tsup": "^6.7.0",
+		"typescript": "^4.9.5",
+		"vitest": "^0.30.1"
 	},
 	"dependencies": {
-		"@hapi/boom": "^10.0.0",
-		"@sapphire/shapeshift": "^3.4.1",
+		"@hapi/boom": "^10.0.1",
+		"@sapphire/shapeshift": "^3.8.2",
 		"cookie": "^0.5.0",
-		"tslib": "^2.4.0",
+		"tslib": "^2.5.0",
 		"tsyringe": "^4.7.0",
-		"undici": "^5.6.0"
+		"undici": "^5.21.2"
 	}
 }

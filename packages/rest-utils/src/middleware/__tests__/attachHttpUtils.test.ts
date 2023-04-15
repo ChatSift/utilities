@@ -1,7 +1,10 @@
-import { Http2ServerResponse } from 'http2';
+/* eslint-disable @typescript-eslint/unbound-method */
+
+import { Http2ServerResponse } from 'node:http2';
 import type { Request, Response } from 'polka';
-import { afterEach, describe, expect, Mock, test, vi } from 'vitest';
-import { attachHttpUtils } from '../attachHttpUtils';
+import type { Mock } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { attachHttpUtils } from '../attachHttpUtils.js';
 
 vi.mock('http2');
 

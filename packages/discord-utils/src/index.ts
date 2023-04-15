@@ -1,2 +1,2 @@
-export * from './embed';
-export * from './sortChannels';
+export * from './embed.js';
+export * from './sortChannels.js';

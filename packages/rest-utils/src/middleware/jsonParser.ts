@@ -2,6 +2,7 @@ import { badData, badRequest } from '@hapi/boom';
 import type { NextHandler, Request, Response } from 'polka';
 
 declare module 'polka' {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 	interface Request {
 		/**
 		 * Raw (unparsed) JSON body of the request - present if `wantRaw` is set to `false` in {@link jsonParser}
@@ -12,7 +13,8 @@ declare module 'polka' {
 
 /**
  * Creates a request handler that parses the request body as JSON
- * @param wantRaw Whether to set the value of {@link Request.rawBody}
+ *
+ * @param wantRaw - Whether to set the value of {@link Request.rawBody}
  */
 export function jsonParser(wantRaw = false) {
 	return async (req: Request, _: Response, next: NextHandler) => {
@@ -33,14 +35,17 @@ export function jsonParser(wantRaw = false) {
 			}
 
 			if (data === '') {
-				return await next();
+				// eslint-disable-next-line n/callback-return
+				await next();
+				return;
 			}
 
 			req.body = JSON.parse(data) as unknown;
 
+			// eslint-disable-next-line n/callback-return
 			await next();
-		} catch (e) {
-			const error = e as Error;
+		} catch (error_) {
+			const error = error_ as Error;
 			return next(badData(error.message));
 		}
 	};

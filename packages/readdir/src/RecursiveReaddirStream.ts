@@ -26,9 +26,10 @@
  *
  */
 
-import { readdir, stat } from 'fs/promises';
-import { join as joinPath } from 'path';
-import { EventEmitter, Readable as RawReadable, ReadableOptions } from 'stream';
+import { readdir, stat } from 'node:fs/promises';
+import { join as joinPath } from 'node:path';
+import { Readable as RawReadable } from 'node:stream';
+import type { EventEmitter, ReadableOptions } from 'node:stream';
 import type { TypedEmitter } from 'tiny-typed-emitter';
 
 /**
@@ -52,73 +53,76 @@ export enum ReadMode {
 /**
  * Options for the stream
  */
-export interface RecursiveReaddirStreamOptions {
+export type RecursiveReaddirStreamOptions = {
 	/**
 	 * File extensions to check for
 	 */
-	fileExtensions?: string[] | Set<string>;
+	fileExtensions?: Set<string> | string[];
+	/**
+	 * Passed straight into the parent constructor.
+	 * For more information see https://nodejs.org/api/stream.html#stream_buffering
+	 *
+	 * @default 1000
+	 */
+	highWaterMark?: number;
 	/**
 	 * The read mode to use
 	 */
 	readMode?: ReadMode;
-	/**
-	 * Passed straight into the parent constructor.
-	 * For more information see https://nodejs.org/api/stream.html#stream_buffering
-	 * @default 1000
-	 */
-	highWaterMark?: number;
-}
+};
 
 /**
  * Represents a "node" (directory) in the file system
+ *
  * @internal
  */
-interface Node {
-	/**
-	 * Files included in the directory - will be undefined if the readdir call failed, triggering the error handler
-	 */
-	files?: string[];
+type Node = {
 	/**
 	 * How many layers deep this directory is - relative from the starting path
 	 */
 	depth: number;
 	/**
+	 * Files included in the directory - will be undefined if the readdir call failed, triggering the error handler
+	 */
+	files?: string[];
+	/**
 	 * Absolute path to this directory
 	 */
 	path: string;
-}
+};
 
 /**
  * @internal
  */
-interface RecursiveReaddirStreamEvents {
+type RecursiveReaddirStreamEvents = {
 	/**
-	 * @event
+	 * @event RecursiveReaddirStream#data
 	 */
-	end: () => Awaited<void>;
+	data(file: string): void;
 	/**
-	 * @event
+	 * @event RecursiveReaddirStream#end
 	 */
-	data: (file: string) => Awaited<void>;
+	end(): void;
 	/**
-	 * @event
+	 * @event RecursiveReaddirStream#error
 	 */
-	warn: (error: Error) => Awaited<void>;
+	error(error: Error): void;
 	/**
-	 * @event
+	 * @event RecursiveReaddirStream#warn
 	 */
-	error: (error: Error) => Awaited<void>;
-}
+	warn(error: Error): void;
+};
 
 /**
  * @internal
  */
-type TypedReadable = {
+type TypedReadable = TypedEmitter<RecursiveReaddirStreamEvents> & {
 	[K in Exclude<keyof RawReadable, keyof EventEmitter>]: RawReadable[K];
-} & TypedEmitter<RecursiveReaddirStreamEvents>;
+};
 
 const Readable = RawReadable as new (opts?: ReadableOptions) => TypedReadable;
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface RecursiveReaddirStream extends RecursiveReaddirStreamEvents {}
 
 /**
@@ -131,37 +135,43 @@ export class RecursiveReaddirStream extends Readable {
 	 * Recoverable/expected errors - when found they cause a "warn" event
 	 */
 	public static readonly EXPECTED_ERRORS = new Set(['ENOENT', 'EPERM', 'EACCES', 'ELOOP']);
+
 	/**
 	 * Valid file extensions for this read operation
 	 */
 	private readonly _fileExtensions: Set<string>;
+
 	/**
 	 * Read mode this stream is in - see {@link RecursiveReaddirStreamOptions.readMode}
 	 */
 	private readonly _readMode: ReadMode;
+
 	/**
 	 * Unconsumed and unresolved {@link Node}s to go through
+	 *
 	 * @internal
 	 */
 	private readonly _nodes: Promise<Node>[];
+
 	/**
 	 * Current node being consumed
 	 */
 	private _currentNode?: Node;
+
 	/**
 	 * Wether data is currently being read or not
 	 */
 	private _reading = false;
 
 	/**
-	 * @param root Where to start reading from
-	 * @param options Additional reading options
+	 * @param root - Where to start reading from
+	 * @param options - Additional reading options
 	 */
 	public constructor(root: string, options?: RecursiveReaddirStreamOptions) {
 		super({
 			objectMode: true,
 			encoding: 'utf8',
-			highWaterMark: options?.highWaterMark ?? 1000,
+			highWaterMark: options?.highWaterMark ?? 1_000,
 		});
 
 		this._nodes = [this._explore(root, 0)];
@@ -171,6 +181,7 @@ export class RecursiveReaddirStream extends Readable {
 
 	/**
 	 * Handles an error event encountered while reading
+	 *
 	 * @internal
 	 */
 	private _handleError(error: Error & { code?: any }): void {
@@ -183,8 +194,9 @@ export class RecursiveReaddirStream extends Readable {
 
 	/**
 	 * "Explores" further down the file system
-	 * @param path Absolute path to "explore"
-	 * @param depth How deep this path is relative to the root
+	 *
+	 * @param path - Absolute path to "explore"
+	 * @param depth - How deep this path is relative to the root
 	 * @internal
 	 */
 	private async _explore(path: string, depth: number): Promise<Node> {
@@ -240,6 +252,7 @@ export class RecursiveReaddirStream extends Readable {
 							this._handleError(error as Error);
 						}
 
+						// eslint-disable-next-line no-param-reassign
 						batch--;
 					}
 				} else {

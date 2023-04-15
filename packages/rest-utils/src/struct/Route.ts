@@ -1,32 +1,32 @@
 import type { BaseValidator } from '@sapphire/shapeshift';
 import type { IError, Middleware, NextHandler, Polka, Request, Response } from 'polka';
-import { jsonParser } from '../middleware/jsonParser';
-import { validate } from '../middleware/validate';
+import { jsonParser } from '../middleware/jsonParser.js';
+import { validate } from '../middleware/validate.js';
 
 /**
  * Valid HTTP methods
  */
 export enum RouteMethod {
+	delete = 'delete',
 	get = 'get',
+	patch = 'patch',
 	post = 'post',
 	put = 'put',
-	delete = 'delete',
-	patch = 'patch',
 }
 
 /**
  * Information about a route
  */
-export interface RouteInfo {
-	/**
-	 * Path of this route on the webserver
-	 */
-	path: string;
+export type RouteInfo = {
 	/**
 	 * Method of this route
 	 */
 	method: RouteMethod;
-}
+	/**
+	 * Path of this route on the webserver
+	 */
+	path: string;
+};
 
 export type TRequest<TBody> = Omit<Request, 'body'> & { body: TBody };
 
@@ -34,7 +34,7 @@ export type TRequest<TBody> = Omit<Request, 'body'> & { body: TBody };
  * Represents a route on the server
  */
 export abstract class Route<TResult, TBody> {
-	public readonly __internalOnlyHereForTypeInferrenceDoNotUse__!: { result: TResult; body: TBody };
+	public readonly __internalOnlyHereForTypeInferrenceDoNotUse__!: { body: TBody; result: TResult };
 
 	/**
 	 * Base route information
@@ -58,7 +58,8 @@ export abstract class Route<TResult, TBody> {
 
 	/**
 	 * Registers this route
-	 * @param server The Polka webserver to register this route onto
+	 *
+	 * @param server - The Polka webserver to register this route onto
 	 */
 	public register(server: Polka): void {
 		const middleware = [];
@@ -71,8 +72,8 @@ export abstract class Route<TResult, TBody> {
 		server[this.info.method](this.info.path, ...middleware, async (req, res, next) => {
 			try {
 				await this.handle(req as TRequest<TBody>, res, next);
-			} catch (e) {
-				void next(e as IError);
+			} catch (error) {
+				return next(error as IError);
 			}
 		});
 	}

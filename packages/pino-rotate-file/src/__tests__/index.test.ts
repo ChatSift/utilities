@@ -1,11 +1,13 @@
 import * as fs from 'node:fs/promises';
+import process from 'node:process';
 import * as sonicBoom from 'sonic-boom';
-import { afterEach, describe, expect, Mock, test, vi } from 'vitest';
-import { pinoRotateFile } from '../';
+import type { Mock } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { pinoRotateFile } from '../index.js';
 
 vi.useFakeTimers();
 
-const nowMock = vi.fn(() => new Date().getTime());
+const nowMock = vi.fn(() => Date.now());
 global.Date.now = nowMock;
 
 const readdirSpy = vi.spyOn(fs, 'readdir') as unknown as Mock<[path: String], Promise<string[]>>;
@@ -14,15 +16,16 @@ const accessSpy = vi.spyOn(fs, 'access');
 const mkdirSpy = vi.spyOn(fs, 'mkdir');
 
 vi.mock('node:fs/promises', () => ({
-	readdir: vi.fn(() => Promise.resolve([])),
-	unlink: vi.fn(() => Promise.resolve()),
-	access: vi.fn(() => Promise.resolve()),
-	mkdir: vi.fn(() => Promise.resolve()),
+	readdir: vi.fn(async () => []),
+	unlink: vi.fn(async () => {}),
+	access: vi.fn(async () => {}),
+	mkdir: vi.fn(async () => {}),
 }));
 
 const sonicBoomConstructorSpy = vi.spyOn(sonicBoom, 'SonicBoom');
 
 vi.mock('sonic-boom', async () => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const { EventEmitter } = await vi.importActual<typeof import('node:events')>('node:events');
 
 	class MockSonicBoom extends EventEmitter {
@@ -57,12 +60,14 @@ describe('initial file creation', () => {
 
 	test('it creates the dir if mkdir is true', async () => {
 		// dir doesn't exist
-		accessSpy.mockImplementation(() => Promise.reject(new Error()));
+		accessSpy.mockImplementation(async () => {
+			throw new Error('boom');
+		});
 		// no files exist in dir
 		readdirSpy.mockReturnValue(Promise.resolve([]));
-		mkdirSpy.mockImplementation(() => {
+		mkdirSpy.mockImplementation(async () => {
 			// Update access implementation to reflect on dir being created
-			accessSpy.mockImplementation(() => Promise.resolve());
+			accessSpy.mockImplementation(async () => {});
 			return Promise.resolve() as Promise<undefined>;
 		});
 		nowMock.mockReturnValue(new Date('2022-01-01').getTime());

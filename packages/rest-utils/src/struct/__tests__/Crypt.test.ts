@@ -1,12 +1,15 @@
 import 'reflect-metadata';
-import { randomBytes } from 'crypto';
+import { Buffer } from 'node:buffer';
+import { randomBytes } from 'node:crypto';
 import { container } from 'tsyringe';
 import { expect, test, vi } from 'vitest';
-import { Crypt } from '../Crypt';
+import { Crypt } from '../Crypt.js';
 
 vi.mock('crypto', async () => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const original: typeof import('crypto') = await vi.importActual('crypto');
-	const randomBytes = (len: number) => Buffer.from(Array(len).fill(1));
+	// eslint-disable-next-line unicorn/consistent-function-scoping
+	const randomBytes = (len: number) => Buffer.from(Array.from<number>({ length: len }).fill(1));
 	return {
 		...original,
 		randomBytes,

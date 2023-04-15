@@ -1,10 +1,12 @@
-import { RecursiveReaddirStream, RecursiveReaddirStreamOptions } from './RecursiveReaddirStream';
+import type { RecursiveReaddirStreamOptions } from './RecursiveReaddirStream';
+import { RecursiveReaddirStream } from './RecursiveReaddirStream.js';
 
-export * from './RecursiveReaddirStream';
+export * from './RecursiveReaddirStream.js';
 
 /**
  * Recursively and asynchronously reads a directory, returning an iterable that can be consumed as the filesystem is traversed
- * @param root Where to start reading from
+ *
+ * @param root - Where to start reading from
  * @returns An async iterable of paths
  * @example
  * ```ts
@@ -21,8 +23,9 @@ export function readdirRecurse(root: string, options?: RecursiveReaddirStreamOpt
 
 /**
  * Recursively and asynchronously traverses a directory, returning an array of all the paths
- * @param root Where to start reading from
- * @param options
+ *
+ * @param root - Where to start reading from
+ * @param options - Additional reading options
  * @returns An array of paths
  * @example
  * ```ts
@@ -30,7 +33,7 @@ export function readdirRecurse(root: string, options?: RecursiveReaddirStreamOpt
  * console.log(files);
  * ```
  */
-export function readdirRecurseAsync(root: string, options?: RecursiveReaddirStreamOptions): Promise<string[]> {
+export async function readdirRecurseAsync(root: string, options?: RecursiveReaddirStreamOptions): Promise<string[]> {
 	return new Promise<string[]>((resolve, reject) => {
 		const files: string[] = [];
 		new RecursiveReaddirStream(root, options)

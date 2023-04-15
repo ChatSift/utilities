@@ -1,6 +1,6 @@
 import type { APIEmbed, APIEmbedField } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { addFields, ellipsis, MESSAGE_LIMITS, truncateEmbed } from '../embed';
+import { addFields, ellipsis, MESSAGE_LIMITS, truncateEmbed } from '../embed.js';
 
 describe('addFields', () => {
 	test('no existing fields', () => {
@@ -36,9 +36,9 @@ describe('truncateEmbed', () => {
 	test('basic embed properties', () => {
 		const embed: APIEmbed = {
 			title: 'foo'.repeat(256),
-			description: 'bar'.repeat(4096),
+			description: 'bar'.repeat(4_096),
 			author: { name: 'baz'.repeat(256) },
-			footer: { text: 'qux'.repeat(2048) },
+			footer: { text: 'qux'.repeat(2_048) },
 		};
 
 		const truncated = truncateEmbed(embed);
@@ -51,7 +51,7 @@ describe('truncateEmbed', () => {
 
 	test('fields', () => {
 		const embed: APIEmbed = {
-			fields: Array(30).fill({ name: 'foo', value: 'bar' }),
+			fields: Array.from<APIEmbedField>({ length: 30 }).fill({ name: 'foo', value: 'bar' }),
 		};
 
 		expect(truncateEmbed(embed).fields).toHaveLength(MESSAGE_LIMITS.EMBEDS.FIELD_COUNT);

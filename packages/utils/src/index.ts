@@ -1,5 +1,6 @@
 /**
  * Creates a union type from 2 sub-types: `T` itself and `T` where all the `K` keys become null.
+ *
  * @example
  * ```ts
  * type Data = NullableProperties<{ x: string; y: string; z: string }, 'x' | 'y'>; // { x: string; y: string; z: string } | { x: null; y: null; z: string }
@@ -13,6 +14,7 @@ export type NullableProperties<T extends Record<string, any>, K extends keyof T>
 
 /**
  * Gets the `T` type from a `T[]` type.
+ *
  * @example
  * ```ts
  * type Data = (string | number | Very | Complex | Union)[];
@@ -22,9 +24,15 @@ export type NullableProperties<T extends Record<string, any>, K extends keyof T>
 export type InferArrayT<Ts> = Ts extends (infer T)[] ? T : never;
 
 /**
+ * Represents a value that could be a promise.
+ */
+export type Awaitable<T> = Promise<T> | T;
+
+/**
  * "Groups" the elements of an array based off of a grouper function
- * @param array The array to group
- * @param grouper Function returning a key for each element
+ *
+ * @param array - The array to group
+ * @param grouper - Function returning a key for each element
  * @example
  * ```ts
  * const data = [0, 1, 2, 3, 4, 5, 6];
@@ -44,8 +52,9 @@ export function groupBy<T, R extends string>(array: T[], grouper: (element: T) =
 
 /**
  * Splits an array into chunks of a given size
- * @param array The array to split
- * @param size How big each chunk should be
+ *
+ * @param array - The array to split
+ * @param size - How big each chunk should be
  * @example
  * ```ts
  * const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -55,13 +64,13 @@ export function groupBy<T, R extends string>(array: T[], grouper: (element: T) =
 export function chunkArray<T>(array: T[], size: number): T[][] {
 	const out: T[][] = [];
 	let pushed = 0;
-	let i = 0;
+	let index = 0;
 
 	for (const element of array) {
-		(out[i] ??= []).push(element);
+		(out[index] ??= []).push(element);
 		if (++pushed === size) {
 			pushed = 0;
-			i++;
+			index++;
 		}
 	}
 
@@ -70,8 +79,9 @@ export function chunkArray<T>(array: T[], size: number): T[][] {
 
 /**
  * Returns an iterator ranging from `start` to `end`
- * @param start The start of the range (inclusive)
- * @param end The end of the range (exclusive)
+ *
+ * @param start - The start of the range (inclusive)
+ * @param end - The end of the range (exclusive)
  * @example
  * ```ts
  * for (const i of range(0, 10)) {
@@ -80,7 +90,7 @@ export function chunkArray<T>(array: T[], size: number): T[][] {
  * ```
  */
 export function* range(start: number, end: number): IterableIterator<number> {
-	for (let i = start; i < end; i++) {
-		yield i;
+	for (let index = start; index < end; index++) {
+		yield index;
 	}
 }

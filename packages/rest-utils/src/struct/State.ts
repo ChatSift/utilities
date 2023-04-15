@@ -1,4 +1,5 @@
-import { randomBytes } from 'crypto';
+import { Buffer } from 'node:buffer';
+import { randomBytes } from 'node:crypto';
 
 export class State {
 	public static from(data: string): State {
@@ -25,7 +26,7 @@ export class State {
 
 	public toBytes() {
 		const time = Buffer.allocUnsafe(4);
-		time.writeUInt32LE(Math.floor(this.createdAt.getTime() / 1000));
+		time.writeUInt32LE(Math.floor(this.createdAt.getTime() / 1_000));
 		return Buffer.concat([this.nonce, time, Buffer.from(this.redirectUri)]);
 	}
 }

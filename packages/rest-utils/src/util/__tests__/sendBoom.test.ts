@@ -1,9 +1,11 @@
-import { Http2ServerResponse } from 'http2';
+/* eslint-disable @typescript-eslint/unbound-method */
+
+import { Http2ServerResponse } from 'node:http2';
 import { badData, badRequest, internal, unauthorized } from '@hapi/boom';
 import { s } from '@sapphire/shapeshift';
 import type { Response } from 'polka';
 import { afterEach, expect, test, vi } from 'vitest';
-import { sendBoom } from '../sendBoom';
+import { sendBoom } from '../sendBoom.js';
 
 vi.mock('http2');
 

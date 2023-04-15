@@ -1,4 +1,5 @@
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { Buffer } from 'node:buffer';
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { singleton, inject } from 'tsyringe';
 
 @singleton()

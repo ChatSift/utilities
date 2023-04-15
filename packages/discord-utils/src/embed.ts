@@ -7,7 +7,7 @@ export const MESSAGE_LIMITS = {
 	/**
 	 * How long a message can be in characters
 	 */
-	CONTENT: 4000,
+	CONTENT: 4_000,
 	/**
 	 * How many embeds can be in a message
 	 */
@@ -23,11 +23,11 @@ export const MESSAGE_LIMITS = {
 		/**
 		 * How long an embed description can be in characters
 		 */
-		DESCRIPTION: 4096,
+		DESCRIPTION: 4_096,
 		/**
 		 * How long an embed footer can be in characters
 		 */
-		FOOTER: 2048,
+		FOOTER: 2_048,
 		/**
 		 * How long an embed author can be in characters
 		 */
@@ -47,15 +47,16 @@ export const MESSAGE_LIMITS = {
 			/**
 			 * How long a field value can be in characters
 			 */
-			VALUE: 1024,
+			VALUE: 1_024,
 		},
 	},
 } as const;
 
 /**
  * Adds the given fields to an embed - mutating it
- * @param embed The embed to add fields to
- * @param fields The fields to add
+ *
+ * @param embed - The embed to add fields to
+ * @param fields - The fields to add
  */
 export function addFields(embed: APIEmbed, ...fields: APIEmbedField[]): APIEmbed {
 	(embed.fields ??= []).push(...fields);
@@ -64,8 +65,9 @@ export function addFields(embed: APIEmbed, ...fields: APIEmbedField[]): APIEmbed
 
 /**
  * Cuts off text after the given length - appending "..." at the end
- * @param text The text to cut off
- * @param total The maximum length of the text
+ *
+ * @param text - The text to cut off
+ * @param total - The maximum length of the text
  */
 export function ellipsis(text: string, total: number): string {
 	if (text.length <= total) {
@@ -82,7 +84,8 @@ export function ellipsis(text: string, total: number): string {
 
 /**
  * Returns a fully truncated embed - safe to use with Discord's API - does not mutate the given embed
- * @param embed The embed to truncate
+ *
+ * @param embed - The embed to truncate
  */
 export function truncateEmbed(embed: APIEmbed): APIEmbed {
 	return {

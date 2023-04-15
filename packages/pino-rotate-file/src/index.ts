@@ -3,7 +3,9 @@ import { constants as fsConstants } from 'node:fs';
 import { readdir, unlink, access, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import build from 'pino-abstract-transport';
-import { prettyFactory, PrettyOptions } from 'pino-pretty';
+import type { PrettyOptions } from 'pino-pretty';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { prettyFactory } from 'pino-pretty';
 import { SonicBoom } from 'sonic-boom';
 
 // Their typings don't include prettyFactory for whatever reason
@@ -11,23 +13,23 @@ declare module 'pino-pretty' {
 	export function prettyFactory(options?: PrettyOptions): (chunk: Record<string, any>) => string;
 }
 
-const ONE_DAY = 24 * 60 * 60 * 1000;
+const ONE_DAY = 24 * 60 * 60 * 1_000;
 const DEFAULT_MAX_AGE_DAYS = 14;
 
 /**
  * Options for the transport
  */
-export interface PinoRotateFileOptions {
+export type PinoRotateFileOptions = {
 	dir: string;
 	maxAgeDays?: number;
 	mkdir?: boolean;
 	prettyOptions?: PrettyOptions;
-}
+};
 
-interface Dest {
+type Dest = {
 	path: string;
 	stream: SonicBoom;
-}
+};
 
 function createFileName(time: number): string {
 	return `${new Date(time).toISOString().split('T')[0]!}.log`;
@@ -74,7 +76,7 @@ export async function pinoRotateFile(options: PinoRotateFileOptions) {
 	if (options.mkdir) {
 		try {
 			await access(options.dir, fsConstants.F_OK);
-		} catch (error) {
+		} catch {
 			await mkdir(options.dir, { recursive: true });
 		}
 	}
@@ -90,6 +92,7 @@ export async function pinoRotateFile(options: PinoRotateFileOptions) {
 				if (dest.path !== path) {
 					await cleanup(options.dir, options.maxAgeDays ?? DEFAULT_MAX_AGE_DAYS);
 					await endStream(dest.stream);
+					// eslint-disable-next-line require-atomic-updates
 					dest = await createDest(path);
 				}
 

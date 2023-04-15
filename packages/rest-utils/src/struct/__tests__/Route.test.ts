@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/consistent-type-assertions */
 
-import { ServerResponse } from 'http';
-import { Middleware, NextHandler, Polka, Request } from 'polka';
+import type { ServerResponse } from 'node:http';
+import type { Middleware, NextHandler, Polka, Request } from 'polka';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { Route, RouteMethod } from '../Route';
+import { Route, RouteMethod } from '../Route.js';
 
 const serverMock = {
 	get: vi.fn(),
@@ -21,6 +21,7 @@ const server = serverMock as unknown as Polka;
 
 class NoMiddlewareTestRoute extends Route<void, never> {
 	public info = { method: RouteMethod.get, path: '/' } as const;
+
 	public middleware: Middleware[] = [];
 
 	public handle = vi.fn();
@@ -42,6 +43,7 @@ describe('route handler', () => {
 		const handle: Middleware = serverMock.get.mock.calls[0][1];
 		const handleParams = [{} as Request, {} as ServerResponse, vi.fn()] as const;
 
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(await handle(...handleParams)).toBe(undefined);
 
 		expect(route.handle).toHaveBeenCalled();
@@ -49,13 +51,14 @@ describe('route handler', () => {
 	});
 
 	test('with middleware and error', async () => {
-		const middleware = (_: Request, __: ServerResponse, next: NextHandler) => next();
+		const middleware = async (_: Request, __: ServerResponse, next: NextHandler) => next();
 
 		class TestRoute extends Route<void, never> {
 			public info = { method: RouteMethod.get, path: '/owo' } as const;
 
 			public middleware: Middleware[] = [middleware];
 
+			// eslint-disable-next-line unicorn/consistent-function-scoping
 			public handle = vi.fn(() => {
 				throw new Error('test');
 			});
@@ -71,6 +74,7 @@ describe('route handler', () => {
 		const next = vi.fn();
 		const handleParams = [{} as Request, {} as ServerResponse, next] as const;
 
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(await handle(...handleParams)).toBe(undefined);
 		expect(route.handle).toHaveBeenCalled();
 		expect(route.handle).toHaveBeenCalledWith(...handleParams);

@@ -1,19 +1,20 @@
 import { groupBy } from '@chatsift/utils';
-import { APIChannel, APIGuildCategoryChannel, APITextChannel, ChannelType } from 'discord-api-types/v10';
+import type { APIChannel, APIGuildCategoryChannel, APITextChannel } from 'discord-api-types/v10';
+import { ChannelType } from 'discord-api-types/v10';
 
 const GUILD_TEXT_TYPES = [ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildForum];
 
 /**
  * Sorts an array of text and category channels - **does not support other channel types**
  */
-export function sortChannels(unsorted: APIChannel[]): (APITextChannel | APIGuildCategoryChannel)[] {
+export function sortChannels(unsorted: APIChannel[]): (APIGuildCategoryChannel | APITextChannel)[] {
 	const filtered = unsorted.filter(
-		(c): c is APITextChannel | APIGuildCategoryChannel =>
-			GUILD_TEXT_TYPES.includes(c.type) || c.type === ChannelType.GuildCategory,
+		(channel): channel is APIGuildCategoryChannel | APITextChannel =>
+			GUILD_TEXT_TYPES.includes(channel.type) || channel.type === ChannelType.GuildCategory,
 	);
 
 	// Group the channels by their category - or "top" if they aren't in one
-	const grouped = groupBy(filtered, (c) => c.parent_id ?? 'top');
+	const grouped = groupBy(filtered, (channel) => channel.parent_id ?? 'top');
 
 	// Sort the top level channels - text channels are above category channels, otherwise use their position
 	const sortedTopLevel = grouped.top
@@ -30,7 +31,7 @@ export function sortChannels(unsorted: APIChannel[]): (APITextChannel | APIGuild
 			return a.position! - b.position!;
 		});
 
-	const channels: (APITextChannel | APIGuildCategoryChannel)[] = [];
+	const channels: (APIGuildCategoryChannel | APITextChannel)[] = [];
 	for (const top of sortedTopLevel ?? []) {
 		channels.push(top);
 

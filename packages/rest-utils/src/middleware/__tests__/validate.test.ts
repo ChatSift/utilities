@@ -2,7 +2,7 @@ import { Boom } from '@hapi/boom';
 import { s } from '@sapphire/shapeshift';
 import type { Request, Response } from 'polka';
 import { afterEach, expect, test, vi } from 'vitest';
-import { validate } from '../validate';
+import { validate } from '../validate.js';
 
 const next = vi.fn();
 

@@ -1,6 +1,6 @@
-import { join as joinPath } from 'path';
+import { join as joinPath } from 'node:path';
 import { expect, test, vi } from 'vitest';
-import { readdirRecurse, readdirRecurseAsync, ReadMode } from '../';
+import { readdirRecurse, readdirRecurseAsync, ReadMode } from '../index.js';
 
 /**
  * Let's create a mock file system structure
@@ -25,7 +25,9 @@ vi.mock('fs/promises', async () => {
 		public readonly code = 'EACCES';
 	}
 
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const original: typeof import('fs/promises') = await vi.importActual('fs/promises');
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/unbound-method
 	const { join: joinPath }: typeof import('path') = await vi.importActual('path');
 
 	return {
@@ -42,13 +44,14 @@ vi.mock('fs/promises', async () => {
 				case joinPath('test2'):
 					return ['dir1'];
 				case joinPath('test2', 'dir1'):
-					return Promise.reject(new EAccessError());
+					throw new EAccessError();
 
 				default:
-					return Promise.reject(new Error(`bad path: ${path}`));
+					throw new Error(`bad path: ${path}`);
 			}
 		}),
-		stat: vi.fn<[string], Promise<{ isDirectory: () => boolean }>>().mockImplementation(async (path) => {
+		stat: vi.fn<[string], Promise<{ isDirectory(): boolean }>>().mockImplementation(async (path) => {
+			/* eslint-disable sonarjs/no-duplicated-branches */
 			switch (path) {
 				case joinPath('test'):
 					return {
@@ -88,17 +91,18 @@ vi.mock('fs/promises', async () => {
 						},
 					};
 				case joinPath('test2', 'dir1'):
-					return Promise.reject(new EAccessError());
+					throw new EAccessError();
+				/* eslint-enable sonarjs/no-duplicated-branches */
 
 				default:
-					return Promise.reject(new Error(`bad path: ${path}`));
+					throw new Error(`bad path: ${path}`);
 			}
 		}),
 	};
 });
 
 test('async iterator stream consumption', async () => {
-	const files = [];
+	const files: string[] = [];
 	for await (const file of readdirRecurse(joinPath('test'), { readMode: ReadMode.both })) {
 		files.push(file);
 	}
@@ -149,7 +153,7 @@ test('warnings', async () => {
 
 	const stream = readdirRecurse(joinPath('test2'), { readMode: ReadMode.both }).on('warn', onWarn).on('error', onError);
 
-	const paths = [];
+	const paths: string[] = [];
 	for await (const path of stream) {
 		paths.push(path);
 	}
@@ -163,7 +167,7 @@ test('fatal errors', async () => {
 	const onWarn = vi.fn();
 	const onError = vi.fn();
 
-	const paths = [];
+	const paths: string[] = [];
 
 	try {
 		const stream = readdirRecurse(joinPath('test3'), { readMode: ReadMode.both })

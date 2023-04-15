@@ -4,8 +4,9 @@ import type { Response } from 'polka';
 
 /**
  * Send a Boom error to the client
- * @param error @hapi/boom `Boom` instance
- * @param res Response to send the error to
+ *
+ * @param error - \@hapi/boom `Boom` instance
+ * @param res - Response to send the error to
  */
 export function sendBoom(error: Boom, res: Response) {
 	res.statusCode = error.output.statusCode;
