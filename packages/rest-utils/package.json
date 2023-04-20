@@ -1,7 +1,7 @@
 {
 	"name": "@chatsift/rest-utils",
 	"description": "Tools for building RESTful APIs",
-	"version": "0.6.2",
+	"version": "0.7.0",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -31,7 +31,7 @@
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
 		"@types/cookie": "^0.5.1",
-		"@types/node": "^16.18.23",
+		"@types/node": "^16.18.24",
 		"polka": "^1.0.0-next.22",
 		"reflect-metadata": "^0.1.13",
 		"tsup": "^6.7.0",
