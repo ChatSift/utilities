@@ -30,7 +30,7 @@ declare module 'http' {
 }
 
 /**
- * Creates a request handler that attaches some utils to the response object - documentation for those can be found under {@link ServerResponse}
+ * Creates a request handler that attaches some utils to the response object - documentation for those can be found under ServerResponse
  */
 export function attachHttpUtils() {
 	return async (_: Request, res: Response, next: NextHandler) => {

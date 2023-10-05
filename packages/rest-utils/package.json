@@ -30,20 +30,20 @@
 	},
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
-		"@types/cookie": "^0.5.1",
-		"@types/node": "^16.18.24",
+		"@types/cookie": "^0.5.2",
+		"@types/node": "^16.18.57",
 		"polka": "^1.0.0-next.22",
 		"reflect-metadata": "^0.1.13",
-		"tsup": "^6.7.0",
-		"typescript": "^4.9.5",
-		"vitest": "^0.30.1"
+		"tsup": "^7.2.0",
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.6"
 	},
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",
-		"@sapphire/shapeshift": "^3.8.2",
+		"@sapphire/shapeshift": "^3.9.2",
 		"cookie": "^0.5.0",
-		"tslib": "^2.5.0",
-		"tsyringe": "^4.7.0",
-		"undici": "^5.21.2"
+		"tslib": "^2.6.2",
+		"tsyringe": "^4.8.0",
+		"undici": "^5.25.4"
 	}
 }

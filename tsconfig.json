@@ -18,7 +18,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"noImplicitOverride": true,
-		"importsNotUsedAsValues": "error",
+		"verbatimModuleSyntax": true,
 		"declaration": true,
 		"declarationMap": true,
 		"emitDeclarationOnly": true

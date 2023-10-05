@@ -30,12 +30,12 @@
 	},
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
-		"@types/node": "^16.18.24",
-		"tsup": "^6.7.0",
-		"typescript": "^4.9.5",
-		"vitest": "^0.30.1"
+		"@types/node": "^16.18.57",
+		"tsup": "^7.2.0",
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.6"
 	},
 	"dependencies": {
-		"tslib": "^2.5.0"
+		"tslib": "^2.6.2"
 	}
 }

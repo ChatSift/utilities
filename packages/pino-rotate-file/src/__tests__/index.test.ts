@@ -42,7 +42,7 @@ vi.mock('sonic-boom', async () => {
 });
 
 afterEach(() => {
-	vi.restoreAllMocks();
+	vi.clearAllMocks();
 });
 
 describe('initial file creation', () => {
