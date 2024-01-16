@@ -1,7 +1,7 @@
 {
 	"name": "@chatsift/utils",
 	"description": "General purpose functions and types that should really be language standard",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -30,10 +30,10 @@
 	},
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
-		"@types/node": "^16.18.57",
-		"tsup": "^7.2.0",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"@types/node": "^20.11.4",
+		"tsup": "^8.0.1",
+		"typescript": "^5.3.3",
+		"vitest": "^1.2.0"
 	},
 	"dependencies": {
 		"tslib": "^2.6.2"

@@ -96,13 +96,13 @@ export function truncateEmbed(embed: APIEmbed): APIEmbed {
 			? {
 					...embed.author,
 					name: ellipsis(embed.author.name, MESSAGE_LIMITS.EMBEDS.AUTHOR),
-			  }
+				}
 			: undefined,
 		footer: embed.footer
 			? {
 					...embed.footer,
 					text: ellipsis(embed.footer.text, MESSAGE_LIMITS.EMBEDS.FOOTER),
-			  }
+				}
 			: undefined,
 		fields: embed.fields
 			? embed.fields

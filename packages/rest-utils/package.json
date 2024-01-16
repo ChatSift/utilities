@@ -1,7 +1,7 @@
 {
 	"name": "@chatsift/rest-utils",
 	"description": "Tools for building RESTful APIs",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -30,20 +30,20 @@
 	},
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
-		"@types/cookie": "^0.5.2",
-		"@types/node": "^16.18.57",
+		"@types/cookie": "^0.6.0",
+		"@types/node": "^20.11.4",
 		"polka": "^1.0.0-next.22",
-		"reflect-metadata": "^0.1.13",
-		"tsup": "^7.2.0",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"reflect-metadata": "^0.2.1",
+		"tsup": "^8.0.1",
+		"typescript": "^5.3.3",
+		"vitest": "^1.2.0"
 	},
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",
-		"@sapphire/shapeshift": "^3.9.2",
-		"cookie": "^0.5.0",
+		"@sapphire/shapeshift": "^3.9.5",
+		"cookie": "^0.6.0",
 		"tslib": "^2.6.2",
 		"tsyringe": "^4.8.0",
-		"undici": "^5.25.4"
+		"undici": "^6.3.0"
 	}
 }
