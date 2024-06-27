@@ -42,3 +42,23 @@ export async function readdirRecurseAsync(root: string, options?: RecursiveReadd
 			.on('error', (error) => reject(error));
 	});
 }
+
+/**
+ * Recursively and asynchronously traversess multiple directories, returning an array of all the paths
+ *
+ * @param roots - The paths to read
+ * @param options - Additional reading options
+ * @returns An array of paths
+ * @example
+ * ```ts
+ * const files = await readdirRecurseManyAsync(['/path/to/dir', '/other/path']);
+ * console.log(files);
+ * ```
+ */
+export async function readdirRecurseManyAsync(
+	roots: string[],
+	options?: RecursiveReaddirStreamOptions,
+): Promise<string[]> {
+	const results = await Promise.all(roots.map(async (root) => readdirRecurseAsync(root, options)));
+	return results.flat();
+}

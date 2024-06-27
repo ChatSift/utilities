@@ -139,29 +139,29 @@ export class RecursiveReaddirStream extends Readable {
 	/**
 	 * Valid file extensions for this read operation
 	 */
-	private readonly _fileExtensions: Set<string>;
+	readonly #fileExtensions: Set<string>;
 
 	/**
 	 * Read mode this stream is in - see {@link RecursiveReaddirStreamOptions.readMode}
 	 */
-	private readonly _readMode: ReadMode;
+	readonly #readMode: ReadMode;
 
 	/**
 	 * Unconsumed and unresolved {@link Node}s to go through
 	 *
 	 * @internal
 	 */
-	private readonly _nodes: Promise<Node>[];
+	readonly #nodes: Promise<Node>[];
 
 	/**
 	 * Current node being consumed
 	 */
-	private _currentNode?: Node;
+	#currentNode?: Node;
 
 	/**
 	 * Wether data is currently being read or not
 	 */
-	private _reading = false;
+	#reading = false;
 
 	/**
 	 * @param root - Where to start reading from
@@ -174,9 +174,9 @@ export class RecursiveReaddirStream extends Readable {
 			highWaterMark: options?.highWaterMark ?? 1_000,
 		});
 
-		this._nodes = [this._explore(root, 0)];
-		this._fileExtensions = new Set(options?.fileExtensions ?? []);
-		this._readMode = options?.readMode ?? ReadMode.file;
+		this.#nodes = [this.explore(root, 0)];
+		this.#fileExtensions = new Set(options?.fileExtensions ?? []);
+		this.#readMode = options?.readMode ?? ReadMode.file;
 	}
 
 	/**
@@ -184,7 +184,7 @@ export class RecursiveReaddirStream extends Readable {
 	 *
 	 * @internal
 	 */
-	private _handleError(error: Error & { code?: any }): void {
+	private handleError(error: Error & { code?: any }): void {
 		if (typeof error.code === 'string' && RecursiveReaddirStream.EXPECTED_ERRORS.has(error.code) && !this.destroyed) {
 			return void this.emit('warn', error);
 		}
@@ -199,12 +199,12 @@ export class RecursiveReaddirStream extends Readable {
 	 * @param depth - How deep this path is relative to the root
 	 * @internal
 	 */
-	private async _explore(path: string, depth: number): Promise<Node> {
+	private async explore(path: string, depth: number): Promise<Node> {
 		let files: string[] | undefined;
 		try {
 			files = await readdir(path);
 		} catch (error) {
-			this._handleError(error as Error);
+			this.handleError(error as Error);
 		}
 
 		return { files, depth: depth + 1, path };
@@ -215,16 +215,16 @@ export class RecursiveReaddirStream extends Readable {
 	 * @internal
 	 */
 	public override _read = async (batch: number): Promise<void> => {
-		if (this._reading) {
+		if (this.#reading) {
 			return;
 		}
 
-		this._reading = true;
+		this.#reading = true;
 
 		try {
 			while (!this.destroyed && batch > 0) {
-				if (this._currentNode?.files && this._currentNode.files.length > 0) {
-					const { files = [], depth, path } = this._currentNode;
+				if (this.#currentNode?.files && this.#currentNode.files.length > 0) {
+					const { files = [], depth, path } = this.#currentNode;
 
 					for (const entry of files.splice(0, batch)) {
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -238,31 +238,31 @@ export class RecursiveReaddirStream extends Readable {
 							const statResult = await stat(full);
 
 							if (statResult.isDirectory()) {
-								this._nodes.push(this._explore(full, depth));
-								if (this._readMode !== ReadMode.file) {
+								this.#nodes.push(this.explore(full, depth));
+								if (this.#readMode !== ReadMode.file) {
 									this.push(full);
 								}
 							} else if (
-								this._readMode !== ReadMode.dir &&
-								(!this._fileExtensions.size || this._fileExtensions.has(entry.split('.').pop() ?? ''))
+								this.#readMode !== ReadMode.dir &&
+								(!this.#fileExtensions.size || this.#fileExtensions.has(entry.split('.').pop() ?? ''))
 							) {
 								this.push(full);
 							}
 						} catch (error) {
-							this._handleError(error as Error);
+							this.handleError(error as Error);
 						}
 
 						// eslint-disable-next-line no-param-reassign
 						batch--;
 					}
 				} else {
-					const parent = this._nodes.pop();
+					const parent = this.#nodes.pop();
 					if (!parent) {
 						this.push(null);
 						break;
 					}
 
-					this._currentNode = await parent;
+					this.#currentNode = await parent;
 
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					if (this.destroyed) {
@@ -273,7 +273,7 @@ export class RecursiveReaddirStream extends Readable {
 		} catch (error) {
 			this.destroy(error as Error);
 		} finally {
-			this._reading = false;
+			this.#reading = false;
 		}
 	};
 

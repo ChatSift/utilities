@@ -1,5 +1,5 @@
 import { join as joinPath } from 'node:path';
-import { expect, test, vi } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 import { readdirRecurse, readdirRecurseAsync, ReadMode } from '../index.js';
 
 /**
@@ -16,7 +16,7 @@ import { readdirRecurse, readdirRecurseAsync, ReadMode } from '../index.js';
  * - - - ?
  */
 
-vi.mock('fs/promises', async () => {
+vi.mock('node:fs/promises', async (importOriginal) => {
 	class EAccessError extends Error {
 		public constructor() {
 			super();
@@ -26,9 +26,9 @@ vi.mock('fs/promises', async () => {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	const original: typeof import('fs/promises') = await vi.importActual('fs/promises');
+	const original: typeof import('fs/promises') = await importOriginal();
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/unbound-method
-	const { join: joinPath }: typeof import('path') = await vi.importActual('path');
+	const { join: joinPath }: typeof import('path') = await vi.importActual('node:path');
 
 	return {
 		...original,
