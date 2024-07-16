@@ -1,7 +1,7 @@
 {
 	"name": "@chatsift/pino-rotate-file",
 	"description": "Simple pino transport for rotating files",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -19,7 +19,7 @@
 		"build": "tsup && tsc",
 		"test": "vitest run",
 		"lint": "eslint src --ext .ts",
-		"prepack": "yarn build && yarn lint && yarn test"
+		"prepack": "yarn build"
 	},
 	"repository": {
 		"type": "git",

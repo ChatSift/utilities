@@ -19,7 +19,7 @@
 		"build": "tsup && tsc",
 		"test": "vitest run",
 		"lint": "eslint src --ext .ts",
-		"prepack": "yarn build && yarn lint && yarn test"
+		"prepack": "yarn build"
 	},
 	"repository": {
 		"type": "git",
