@@ -19,7 +19,7 @@
 		"build": "tsup && tsc",
 		"test": "vitest run",
 		"lint": "eslint src --ext .ts",
-		"prepublishOnly": "yarn build && yarn lint && yarn test"
+		"prepack": "yarn build && yarn lint && yarn test"
 	},
 	"repository": {
 		"type": "git",
@@ -33,17 +33,17 @@
 		"@types/cookie": "^0.6.0",
 		"@types/node": "^20.11.4",
 		"polka": "^1.0.0-next.22",
-		"reflect-metadata": "^0.2.1",
-		"tsup": "^8.0.1",
-		"typescript": "^5.3.3",
+		"reflect-metadata": "^0.2.2",
+		"tsup": "^8.1.0",
+		"typescript": "^5.5.3",
 		"vitest": "^1.6.0"
 	},
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",
 		"@sapphire/shapeshift": "^3.9.5",
 		"cookie": "^0.6.0",
-		"tslib": "^2.6.2",
+		"tslib": "^2.6.3",
 		"tsyringe": "^4.8.0",
-		"undici": "^6.3.0"
+		"undici": "^6.19.2"
 	}
 }

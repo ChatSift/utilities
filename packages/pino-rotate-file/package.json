@@ -19,7 +19,7 @@
 		"build": "tsup && tsc",
 		"test": "vitest run",
 		"lint": "eslint src --ext .ts",
-		"prepublishOnly": "yarn build && yarn lint && yarn test"
+		"prepack": "yarn build && yarn lint && yarn test"
 	},
 	"repository": {
 		"type": "git",
@@ -31,14 +31,14 @@
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
 		"@types/node": "^20.11.4",
-		"sonic-boom": "^3.8.0",
-		"tsup": "^8.0.1",
-		"typescript": "^5.3.3",
+		"sonic-boom": "^4.0.1",
+		"tsup": "^8.1.0",
+		"typescript": "^5.5.3",
 		"vitest": "^1.6.0"
 	},
 	"dependencies": {
-		"pino": "^8.17.2",
-		"pino-abstract-transport": "^1.1.0",
-		"tslib": "^2.6.2"
+		"pino": "^9.3.1",
+		"pino-abstract-transport": "^1.2.0",
+		"tslib": "^2.6.3"
 	}
 }

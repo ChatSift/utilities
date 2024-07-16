@@ -19,7 +19,7 @@
 		"build": "tsup && tsc",
 		"test": "vitest run",
 		"lint": "eslint src --ext .ts",
-		"prepublishOnly": "yarn build && yarn lint && yarn test"
+		"prepack": "yarn build && yarn lint && yarn test"
 	},
 	"repository": {
 		"type": "git",
@@ -31,13 +31,13 @@
 	"homepage": "https://github.com/chatsift/utilities",
 	"devDependencies": {
 		"@types/node": "^20.11.4",
-		"tsup": "^8.0.1",
-		"typescript": "^5.3.3",
+		"tsup": "^8.1.0",
+		"typescript": "^5.5.3",
 		"vitest": "^1.6.0"
 	},
 	"dependencies": {
 		"@chatsift/utils": "workspace:^",
-		"discord-api-types": "^0.37.67",
-		"tslib": "^2.6.2"
+		"discord-api-types": "^0.37.92",
+		"tslib": "^2.6.3"
 	}
 }
